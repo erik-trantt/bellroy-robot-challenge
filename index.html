@@ -11,13 +11,25 @@
   </head>
 
   <body style="margin: 0">
-    <div style="height: 100vh; width: 100vw; display: flex">
-      <div class="br-container" style="margin: auto">
+    <div
+      style="height: 100vh; width: 100vw; display: flex; flex-direction: column"
+    >
+      <div class="br-container" style="margin: auto auto 2em">
         <div class="br-board"></div>
         <div class="br-robot">
           <!-- &rsaquo; -->
           <div class="face"></div>
         </div>
+      </div>
+
+      <div class="br-controls-container" style="margin: 2em auto auto">
+        <button type="button" class="br-control br-control-move">
+          Move forward
+        </button>
+
+        <button type="button" class="br-control br-control-rotate">
+          Rotate
+        </button>
       </div>
     </div>
 

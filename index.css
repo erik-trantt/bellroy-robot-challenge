@@ -1,13 +1,16 @@
 :root {
   --br-number-of-tiles: 5;
-  --br-board-size: 80vw;
+  --br-board-size: 60vh;
   --br-board-tile-size: calc(
     var(--br-board-size, 100px) / var(--br-number-of-tiles, 5)
   );
+  --br-robot-rotate-angle: 0deg;
+  --br-primary-color: #e15a1d;
+  --br-secondary-color: #9b9b9b;
 }
 
 html {
-  overflow: hidden;
+  min-width: 400px;
 }
 
 .br-container {
@@ -18,12 +21,11 @@ html {
   .br-board {
     height: inherit;
     width: inherit;
-    background: #ddd;
 
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    outline: 1px solid #000000;
+    outline: 1px solid var(--br-secondary-color, lightgrey);
 
     .br-board-tile {
       aspect-ratio: 1;
@@ -31,7 +33,7 @@ html {
     }
 
     .br-board-tile:nth-child(2n) {
-      background: #eeeeee;
+      background: var(--br-secondary-color, lightgrey);
     }
     .br-board-tile:nth-child(2n + 1) {
       background: #ffffff;
@@ -40,10 +42,9 @@ html {
 
   .br-robot {
     position: absolute;
-    --br-robot-rotate-angle: 0deg;
     width: var(--br-board-tile-size, 10px);
     height: var(--br-board-tile-size, 10px);
-    background: red;
+
     top: 0;
     left: 0;
 
@@ -57,12 +58,52 @@ html {
     }
     .face::before {
       content: "\203A";
-      color: black;
+      color: var(--br-primary-color, orange);
       text-align: center;
       line-height: 1;
-      font-size: 8em;
+      font-size: clamp(4em, 12.5vw, 8em);
       font-family: monospace;
       margin-bottom: 0.1em;
+    }
+  }
+}
+
+.br-controls-container {
+  display: flex;
+  gap: 0.5em;
+
+  .br-control {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    place-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    font-size: clamp(1em, 1.5vw, 2em);
+    line-height: 1.4;
+    appearance: none;
+    background-color: #ffffff;
+  }
+
+  .br-control-move {
+    border: 1px solid var(--br-primary-color, orange);
+    background-color: var(--br-primary-color, orange);
+    color: white;
+
+    &:active {
+      opacity: 75%;
+    }
+  }
+
+  .br-control-rotate {
+    border: 1px solid var(--br-secondary-color, lightgrey);
+    background-color: #fefefe;
+
+    &:active {
+      outline: 1px solid var(--br-secondary-color, lightgrey);
+      outline-offset: -2px;
     }
   }
 }

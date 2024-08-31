@@ -9,6 +9,7 @@ const initRobot = ({ board, instance }) => {
     "ArrowLeft",
     "ArrowUp",
   ];
+  const CSS_VAR_ROBOT_ROTATE_ANGLE = "--br-robot-rotate-angle";
 
   if (instance && instance instanceof HTMLElement) {
     robotInstance = instance;
@@ -48,7 +49,7 @@ const initRobot = ({ board, instance }) => {
    * @param {*} direction
    * @param {*} distance
    */
-  const move = (distance) => {
+  const move = (distance = 0) => {
     // if (!direction) {
     //   console.warn("Unknown direction: " + direction);
     // }
@@ -132,11 +133,28 @@ const initRobot = ({ board, instance }) => {
     if (currentDirectionIndex >= 0) {
       const nextDirectionIndex = (currentDirectionIndex + 1) % 4;
       currentDirection = DIRECTION_SEQUENCE[nextDirectionIndex];
-      return DIRECTION_SEQUENCE[nextDirectionIndex];
+      // return DIRECTION_SEQUENCE[nextDirectionIndex];
+    } else {
+      currentDirection = DIRECTION_SEQUENCE[0];
     }
 
-    currentDirection = DIRECTION_SEQUENCE[0];
-    return DIRECTION_SEQUENCE[0];
+    const rotateAngleString = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue(CSS_VAR_ROBOT_ROTATE_ANGLE);
+
+    const rotateAngle = !isNaN(parseInt(rotateAngleString))
+      ? (parseInt(rotateAngleString) + 90) % 360
+      : 90;
+
+    document.documentElement.style.setProperty(
+      CSS_VAR_ROBOT_ROTATE_ANGLE,
+      `${rotateAngle}deg`
+    );
+
+    // if (robotInstance)
+    // robotInstance?.dataset.brDirection = currentDirection;
+
+    return currentDirection;
   }
 
   /**
@@ -156,8 +174,6 @@ const initRobot = ({ board, instance }) => {
 };
 
 document.addEventListener("DOMContentLoaded", (ev) => {
-  const CSS_VAR_ROBOT_ROTATE_ANGLE = "--br-robot-rotate-angle";
-
   const board = document.querySelector(".br-container > .br-board");
   const robot = document.querySelector(".br-container > .br-robot");
 
@@ -200,41 +216,15 @@ document.addEventListener("DOMContentLoaded", (ev) => {
       return;
     }
 
-    // console.log(kbEvent.key);
-
     switch (kbEvent.key) {
       case "ArrowUp": {
+        // Up key
         robotInstance?.move(boardTileWidth);
         break;
       }
-      // case "ArrowRight": {
-      //   robotInstance?.move("ArrowRight", boardTileWidth);
-      //   break;
-      // }
-      // case "ArrowDown": {
-      //   robotInstance?.move("ArrowDown", boardTileHeight);
-      //   break;
-      // }
-      // case "ArrowLeft": {
-      //   robotInstance?.move("ArrowLeft", boardTileWidth);
-      //   break;
-      // }
       case " ": {
-        const rotateAngleString = window
-          .getComputedStyle(robot)
-          .getPropertyValue(CSS_VAR_ROBOT_ROTATE_ANGLE);
-
-        const rotateAngle = !isNaN(parseInt(rotateAngleString))
-          ? (parseInt(rotateAngleString) + 90) % 360
-          : 90;
-
-        robot.style.setProperty(
-          CSS_VAR_ROBOT_ROTATE_ANGLE,
-          `${rotateAngle}deg`
-        );
-
+        // Spacebar
         robotInstance?.rotateDirection();
-        robot.dataset.brDirection = robotInstance?.getDirection();
 
         break;
       }
@@ -242,5 +232,43 @@ document.addEventListener("DOMContentLoaded", (ev) => {
         // do nothing
       }
     }
+  });
+
+  // const upButton = document.querySelector("button.br-control-up");
+  // upButton?.addEventListener("click", (clickEvent) => {
+  //   if (robotInstance?.getDirection() === "ArrowUp") {
+  //     robotInstance?.move(boardTileWidth);
+  //   }
+  // });
+
+  // const rightButton = document.querySelector("button.br-control-right");
+  // rightButton?.addEventListener("click", (clickEvent) => {
+  //   if (robotInstance?.getDirection() === "ArrowRight") {
+  //     robotInstance?.move(boardTileWidth);
+  //   }
+  // });
+
+  // const downButton = document.querySelector("button.br-control-down");
+  // downButton?.addEventListener("click", (clickEvent) => {
+  //   if (robotInstance?.getDirection() === "ArrowDown") {
+  //     robotInstance?.move(boardTileWidth);
+  //   }
+  // });
+
+  // const leftButton = document.querySelector("button.br-control-left");
+  // leftButton?.addEventListener("click", (clickEvent) => {
+  //   if (robotInstance?.getDirection() === "ArrowLeft") {
+  //     robotInstance?.move(boardTileWidth);
+  //   }
+  // });
+
+  const moveButton = document.querySelector("button.br-control-move");
+  moveButton?.addEventListener("click", () => {
+    robotInstance?.move(boardTileWidth);
+  });
+
+  const rotateButton = document.querySelector("button.br-control-rotate");
+  rotateButton?.addEventListener("click", () => {
+    robotInstance?.rotateDirection();
   });
 });
