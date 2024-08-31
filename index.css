@@ -1,0 +1,68 @@
+:root {
+  --br-number-of-tiles: 5;
+  --br-board-size: 80vw;
+  --br-board-tile-size: calc(
+    var(--br-board-size, 100px) / var(--br-number-of-tiles, 5)
+  );
+}
+
+html {
+  overflow: hidden;
+}
+
+.br-container {
+  height: var(--br-board-size, 100px);
+  width: var(--br-board-size, 100px);
+  position: relative;
+
+  .br-board {
+    height: inherit;
+    width: inherit;
+    background: #ddd;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    outline: 1px solid #000000;
+
+    .br-board-tile {
+      aspect-ratio: 1;
+      flex-basis: var(--br-board-tile-size, 10px);
+    }
+
+    .br-board-tile:nth-child(2n) {
+      background: #eeeeee;
+    }
+    .br-board-tile:nth-child(2n + 1) {
+      background: #ffffff;
+    }
+  }
+
+  .br-robot {
+    position: absolute;
+    --br-robot-rotate-angle: 0deg;
+    width: var(--br-board-tile-size, 10px);
+    height: var(--br-board-tile-size, 10px);
+    background: red;
+    top: 0;
+    left: 0;
+
+    .face {
+      height: inherit;
+      width: inherit;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform: rotate(calc(var(--br-robot-rotate-angle, 0deg)));
+    }
+    .face::before {
+      content: "\203A";
+      color: black;
+      text-align: center;
+      line-height: 1;
+      font-size: 8em;
+      font-family: monospace;
+      margin-bottom: 0.1em;
+    }
+  }
+}
