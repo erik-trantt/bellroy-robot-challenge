@@ -19,9 +19,6 @@ const initRobot = ({ board, instance }) => {
     boardInstance = board;
   }
 
-  console.log(boardInstance.getBoundingClientRect());
-  console.log(robotInstance.getBoundingClientRect());
-
   const { height: maxBoardHeight, width: maxBoardWidth } =
     boardInstance.getBoundingClientRect();
 
@@ -31,13 +28,6 @@ const initRobot = ({ board, instance }) => {
    * @returns boolean
    */
   const canMove = ({ currentPos, distance, limit }) => {
-    console.debug(
-      currentPos + distance,
-      limit,
-      0 <= currentPos + distance,
-      currentPos + distance <= limit
-    );
-
     return (
       0 <= Math.round(currentPos + distance) &&
       Math.round(currentPos + distance) < Math.round(limit)
@@ -50,10 +40,6 @@ const initRobot = ({ board, instance }) => {
    * @param {*} distance
    */
   const move = (distance = 0) => {
-    // if (!direction) {
-    //   console.warn("Unknown direction: " + direction);
-    // }
-
     if (!distance) {
       console.warn("Unknown distance: " + distance);
     }
@@ -195,9 +181,6 @@ document.addEventListener("DOMContentLoaded", (ev) => {
     board.appendChild(tileEl);
   }
 
-  console.debug(board);
-  console.debug(robot);
-
   if (!robot) {
     console.warn("Robot is not found");
     return;
@@ -233,34 +216,6 @@ document.addEventListener("DOMContentLoaded", (ev) => {
       }
     }
   });
-
-  // const upButton = document.querySelector("button.br-control-up");
-  // upButton?.addEventListener("click", (clickEvent) => {
-  //   if (robotInstance?.getDirection() === "ArrowUp") {
-  //     robotInstance?.move(boardTileWidth);
-  //   }
-  // });
-
-  // const rightButton = document.querySelector("button.br-control-right");
-  // rightButton?.addEventListener("click", (clickEvent) => {
-  //   if (robotInstance?.getDirection() === "ArrowRight") {
-  //     robotInstance?.move(boardTileWidth);
-  //   }
-  // });
-
-  // const downButton = document.querySelector("button.br-control-down");
-  // downButton?.addEventListener("click", (clickEvent) => {
-  //   if (robotInstance?.getDirection() === "ArrowDown") {
-  //     robotInstance?.move(boardTileWidth);
-  //   }
-  // });
-
-  // const leftButton = document.querySelector("button.br-control-left");
-  // leftButton?.addEventListener("click", (clickEvent) => {
-  //   if (robotInstance?.getDirection() === "ArrowLeft") {
-  //     robotInstance?.move(boardTileWidth);
-  //   }
-  // });
 
   const moveButton = document.querySelector("button.br-control-move");
   moveButton?.addEventListener("click", () => {
