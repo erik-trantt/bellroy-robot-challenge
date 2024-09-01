@@ -78,12 +78,15 @@ html {
     display: flex;
     place-items: center;
     justify-content: center;
+
+    /* overriding the default button styling */
     padding: 0;
     border: 0;
     cursor: pointer;
-    font-size: clamp(1em, 1.5vw, 2em);
+
+    font-size: clamp(1em, 1.5vw, 1.5em);
     line-height: 1.4;
-    appearance: none;
+
     background-color: #ffffff;
   }
 
@@ -104,6 +107,7 @@ html {
     &:active {
       outline: 1px solid var(--br-secondary-color, lightgrey);
       outline-offset: -2px;
+      color: var(--br-primary-color, orange);
     }
   }
 }
