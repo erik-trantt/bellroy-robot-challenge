@@ -246,6 +246,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // - the Up arrow key to "move forwards", and
   // - the Spacebar key to "rotate"
   window.addEventListener("keyup", (kbEvent) => {
+    if (
+      kbEvent.target instanceof HTMLButtonElement &&
+      kbEvent.target.classList.contains("br-control")
+    ) {
+      // do nothing
+      return;
+    }
+
     switch (kbEvent.key) {
       case "ArrowUp": {
         // Up arrow
