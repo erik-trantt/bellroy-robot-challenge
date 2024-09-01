@@ -80,7 +80,7 @@ html {
     justify-content: center;
 
     /* overriding the default button styling */
-    padding: 0;
+    padding: 2px;
     border: 0;
     cursor: pointer;
 
