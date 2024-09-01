@@ -1,30 +1,103 @@
-const initRobot = ({ board, instance }) => {
-  let robotInstance;
-  let boardInstance;
+const NUMBER_OF_ROWS = 5;
+const NUMBER_OF_COLUMNS = 5;
+const DIRECTION_SEQUENCE = ["Right", "Down", "Left", "Up"];
 
-  let currentDirection = "ArrowRight";
-  const DIRECTION_SEQUENCE = [
-    "ArrowRight",
-    "ArrowDown",
-    "ArrowLeft",
-    "ArrowUp",
-  ];
-  const CSS_VAR_ROBOT_ROTATE_ANGLE = "--br-robot-rotate-angle";
+/**
+ * @typedef {Object} Dimension
+ * @property {number} width - Object's width
+ * @property {height} height - Object's height
+ */
 
-  if (instance && instance instanceof HTMLElement) {
-    robotInstance = instance;
-  }
+/**
+ * @typedef {Object} CreateBoardReturn
+ * @property {Element | null} instance - Then board instance
+ * @property {function():void} init - Creating board and grid
+ * @property {function():Dimension} getBoardSize - Get the dimension of the board
+ */
 
-  if (board && board instanceof HTMLElement) {
-    boardInstance = board;
-  }
+/**
+ * Create a new board.
+ *
+ * @param {Object} options
+ * @param {string} options.selector
+ * @returns {CreateBoardReturn}
+ */
+const createBoard = ({ selector }) => {
+  const board = document.querySelector(selector);
 
-  const { height: maxBoardHeight, width: maxBoardWidth } =
-    boardInstance.getBoundingClientRect();
+  const numberOfGrids = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
+
+  const init = () => {
+    if (!board) {
+      console.warn("Board is not found");
+      return;
+    }
+
+    for (let i = 0; i < numberOfGrids; i++) {
+      const gridElement = document.createElement("div");
+      gridElement.id = `br-board-tile-${i + 1}`;
+      gridElement.classList.add("br-board-tile");
+
+      board.appendChild(gridElement);
+    }
+  };
+
+  const getBoardSize = () => {
+    if (!board) {
+      console.warn("Board is not found");
+      return {
+        width: 0,
+        height: 0,
+      };
+    }
+
+    return {
+      width: board.clientWidth / NUMBER_OF_ROWS,
+      height: board.clientHeight / NUMBER_OF_COLUMNS,
+    };
+  };
+
+  return {
+    instance: board,
+    init,
+    getBoardSize,
+  };
+};
+
+/**
+ * @typedef {Object} CreateRobotReturn
+ * @property {Element | null} instance - Then robot instance
+ * @property {function(number):void} move - Move the robot forwards
+ * @property {function():void} rotate - Change the direction of the robot clockwise
+ * @property {function():Dimension} getDirection - Get the cardinal direction the robot is facing
+ */
+
+/**
+ * Create a new robot.
+ *
+ * @param {Object} options
+ * @param {Element} options.board
+ * @returns {CreateRobotReturn}
+ */
+const createRobot = ({ board }) => {
+  const robot = document.querySelector(".br-container > .br-robot");
+
+  let currentDirection = DIRECTION_SEQUENCE[0];
+
+  const {
+    height: maxBoardHeight,
+    width: maxBoardWidth,
+    top: boardTopPos,
+    left: boardLeftPos,
+  } = board.getBoundingClientRect();
 
   /**
+   * Check if the robot can move in current direction.
    *
-   * @param { currentPos, distance, limit } param0
+   * @param {Object} options
+   * @param {number} options.currentPos
+   * @param {number} options.distance
+   * @param {number} options.limit
    * @returns boolean
    */
   const canMove = ({ currentPos, distance, limit }) => {
@@ -36,25 +109,28 @@ const initRobot = ({ board, instance }) => {
 
   /**
    *
-   * @param {*} direction
-   * @param {*} distance
+   * @param {number} [distance=0] - How far to move a robot
    */
   const move = (distance = 0) => {
     if (!distance) {
       console.warn("Unknown distance: " + distance);
+      return;
+    }
+
+    if (!robot) {
+      console.warn("Robot is not found");
+      return;
     }
 
     // find relative postions
-    const { top: boardTopPos, left: boardLeftPos } =
-      boardInstance.getBoundingClientRect();
     const { top: robotTopPos, left: robotLeftPos } =
-      robotInstance.getBoundingClientRect();
+      robot.getBoundingClientRect();
 
     const relativeTopPos = robotTopPos - boardTopPos;
     const relativeLeftPos = robotLeftPos - boardLeftPos;
 
     switch (currentDirection) {
-      case "ArrowRight": {
+      case "Right": {
         if (
           canMove({
             currentPos: relativeLeftPos,
@@ -62,12 +138,12 @@ const initRobot = ({ board, instance }) => {
             limit: maxBoardWidth,
           })
         ) {
-          robotInstance.style.left = relativeLeftPos + distance;
+          robot.style.left = `${relativeLeftPos + distance}px`;
         }
 
         break;
       }
-      case "ArrowDown": {
+      case "Down": {
         if (
           canMove({
             currentPos: relativeTopPos,
@@ -75,12 +151,12 @@ const initRobot = ({ board, instance }) => {
             limit: maxBoardHeight,
           })
         ) {
-          robotInstance.style.top = relativeTopPos + distance;
+          robot.style.top = `${relativeTopPos + distance}px`;
         }
 
         break;
       }
-      case "ArrowLeft": {
+      case "Left": {
         if (
           canMove({
             currentPos: relativeLeftPos,
@@ -88,12 +164,12 @@ const initRobot = ({ board, instance }) => {
             limit: maxBoardWidth,
           })
         ) {
-          robotInstance.style.left = relativeLeftPos - distance;
+          robot.style.left = `${relativeLeftPos - distance}px`;
         }
 
         break;
       }
-      case "ArrowUp": {
+      case "Up": {
         if (
           canMove({
             currentPos: relativeTopPos,
@@ -101,7 +177,7 @@ const initRobot = ({ board, instance }) => {
             limit: maxBoardHeight,
           })
         ) {
-          robotInstance.style.top = relativeTopPos - distance;
+          robot.style.top = `${relativeTopPos - distance}px`;
         }
         break;
       }
@@ -111,7 +187,9 @@ const initRobot = ({ board, instance }) => {
     }
   };
 
-  function rotateDirection() {
+  function rotate() {
+    const CSS_VAR_ROBOT_ROTATE_ANGLE = "--br-robot-rotate-angle";
+
     const currentDirectionIndex = DIRECTION_SEQUENCE.findIndex(
       (direction) => direction === currentDirection
     );
@@ -136,78 +214,49 @@ const initRobot = ({ board, instance }) => {
       CSS_VAR_ROBOT_ROTATE_ANGLE,
       `${rotateAngle}deg`
     );
-
-    // if (robotInstance)
-    // robotInstance?.dataset.brDirection = currentDirection;
-
-    return currentDirection;
   }
 
-  /**
-   *
-   * @returns
-   */
   function getDirection() {
     return currentDirection;
   }
 
   return {
-    robotInstance,
+    instance: robot,
     move,
     getDirection,
-    rotateDirection,
+    rotate,
   };
 };
 
-document.addEventListener("DOMContentLoaded", (ev) => {
-  const board = document.querySelector(".br-container > .br-board");
-  const robot = document.querySelector(".br-container > .br-robot");
+document.addEventListener("DOMContentLoaded", () => {
+  const board = createBoard({ selector: ".br-container > div.br-board" });
 
-  if (!board) {
+  if (!board.instance) {
     console.warn("Board is not found");
     return;
   }
 
-  const NUMBER_OF_ROWS = 5;
-  const NUMBER_OF_COLUMNS = 5;
+  board.init();
 
-  const NUMBER_OF_TILES = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
-
-  for (let i = 0; i < NUMBER_OF_TILES; i++) {
-    const tileEl = document.createElement("div");
-    tileEl.id = `br-board-tile-${i + 1}`;
-    tileEl.classList.add("br-board-tile");
-
-    board.appendChild(tileEl);
-  }
-
-  if (!robot) {
-    console.warn("Robot is not found");
-    return;
-  }
-
-  const robotInstance = initRobot({
-    board: board,
-    instance: robot,
+  const robot = createRobot({
+    board: board.instance,
   });
 
-  const boardTileWidth = board.clientWidth / NUMBER_OF_ROWS;
-  // const boardTileHeight = board.clientHeight / NUMBER_OF_COLUMNS;
-
+  // add actions to the keyup event for the following keys:
+  // - the Up arrow key to "move forwards", and
+  // - the Spacebar key to "rotate"
   window.addEventListener("keyup", (kbEvent) => {
-    if (kbEvent.defaultPrevented) {
-      return;
-    }
-
     switch (kbEvent.key) {
       case "ArrowUp": {
-        // Up key
-        robotInstance?.move(boardTileWidth);
+        // Up arrow
+        const { width: moveDistance } = board.getBoardSize();
+        robot?.move(moveDistance);
+
         break;
       }
       case " ": {
         // Spacebar
-        robotInstance?.rotateDirection();
+        robot?.rotate();
 
         break;
       }
@@ -217,13 +266,16 @@ document.addEventListener("DOMContentLoaded", (ev) => {
     }
   });
 
+  // initialise "move forward" control button & add click action
   const moveButton = document.querySelector("button.br-control-move");
   moveButton?.addEventListener("click", () => {
-    robotInstance?.move(boardTileWidth);
+    const { width: moveDistance } = board.getBoardSize();
+    robot.move(moveDistance);
   });
 
+  // initialise "rotate" control button & add click action
   const rotateButton = document.querySelector("button.br-control-rotate");
   rotateButton?.addEventListener("click", () => {
-    robotInstance?.rotateDirection();
+    robot.rotate();
   });
 });
