@@ -84,13 +84,6 @@ const createRobot = ({ board }) => {
 
   let currentDirection = DIRECTION_SEQUENCE[0];
 
-  const {
-    height: maxBoardHeight,
-    width: maxBoardWidth,
-    top: boardTopPos,
-    left: boardLeftPos,
-  } = board.getBoundingClientRect();
-
   /**
    * Check if the robot can move in current direction.
    *
@@ -123,6 +116,13 @@ const createRobot = ({ board }) => {
     }
 
     // find relative postions
+    const {
+      height: maxBoardHeight,
+      width: maxBoardWidth,
+      top: boardTopPos,
+      left: boardLeftPos,
+    } = board.getBoundingClientRect();
+
     const { top: robotTopPos, left: robotLeftPos } =
       robot.getBoundingClientRect();
 
