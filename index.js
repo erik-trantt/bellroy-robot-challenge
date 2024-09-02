@@ -245,8 +245,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // add actions to the keyup event for the following keys:
-  // - the Up arrow key to "move forwards", and
-  // - the Spacebar key to "rotate"
+  // - the "M" key to "move forwards", and
+  // - the "R" key to "rotate"
   window.addEventListener("keyup", (kbEvent) => {
     if (
       kbEvent.target instanceof HTMLButtonElement &&
@@ -258,14 +258,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     switch (kbEvent.key) {
       case "m": {
-        // Key "M"
         const { width: moveDistance } = board.getBoardSize();
         robot?.move(moveDistance);
 
         break;
       }
       case "r": {
-        // Key "R"
         robot?.rotate();
 
         break;
