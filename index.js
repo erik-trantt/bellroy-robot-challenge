@@ -12,7 +12,7 @@ const DIRECTION_SEQUENCE = ["Right", "Down", "Left", "Up"];
  * @typedef {Object} CreateBoardReturn
  * @property {Element | null} instance - Then board instance
  * @property {function():void} init - Creating board and grid
- * @property {function():Dimension} getBoardSize - Get the dimension of the board
+ * @property {function():Dimension} getGridSize - Get the dimension of the board
  */
 
 /**
@@ -42,7 +42,7 @@ const createBoard = ({ selector }) => {
     }
   };
 
-  const getBoardSize = () => {
+  const getGridSize = () => {
     if (!board) {
       console.warn("Board is not found");
       return {
@@ -60,7 +60,7 @@ const createBoard = ({ selector }) => {
   return {
     instance: board,
     init,
-    getBoardSize,
+    getGridSize,
   };
 };
 
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     switch (kbEvent.key) {
       case "m": {
-        const { width: moveDistance } = board.getBoardSize();
+        const { width: moveDistance } = board.getGridSize();
         robot?.move(moveDistance);
 
         break;
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // initialise "move forward" control button & add click action
   const moveButton = document.querySelector("button.br-control-move");
   moveButton?.addEventListener("click", () => {
-    const { width: moveDistance } = board.getBoardSize();
+    const { width: moveDistance } = board.getGridSize();
     robot.move(moveDistance);
   });
 
