@@ -5,7 +5,7 @@ const DIRECTION_SEQUENCE = ["Right", "Down", "Left", "Up"];
 /**
  * @typedef {Object} Dimension
  * @property {number} width - Object's width
- * @property {height} height - Object's height
+ * @property {number} height - Object's height
  */
 
 /**
@@ -65,45 +65,58 @@ const createBoard = ({ selector }) => {
 };
 
 /**
+ * @typedef {Object} RobotPosition
+ * @property {number} column - The robot's current column
+ * @property {number} row - The robot's current row
+ */
+
+/**
  * @typedef {Object} CreateRobotReturn
  * @property {Element | null} instance - Then robot instance
- * @property {function(number):void} move - Move the robot forwards
+ * @property {function(number=):void} move - Move the robot forwards
  * @property {function():void} rotate - Change the direction of the robot clockwise
  * @property {function():Dimension} getDirection - Get the cardinal direction the robot is facing
+ * @property {function():void} updateRobotPositions - Get the cardinal direction the robot is facing
  */
 
 /**
  * Create a new robot.
  *
  * @param {Object} options
- * @param {Element} options.board - The game board
  * @param {string} options.robotSelector - The CSS selector string for the robot.
  * @returns {CreateRobotReturn}
  */
-const createRobot = ({ board, robotSelector }) => {
+const createRobot = ({ robotSelector }) => {
   const robot = document.querySelector(robotSelector);
 
   let currentDirection = DIRECTION_SEQUENCE[0];
 
+  // Robot starts at the top left corner of the board.
+  // This translates into a position of [0, 0] with a zero-based index.
+  let currentRow = 0;
+  let currentColumn = 0;
+
   /**
-   * Check if the robot can move in current direction.
+   * Check if the robot can move to the next grid within the board.
    *
    * @param {Object} options
-   * @param {number} options.currentPos
-   * @param {number} options.distance
-   * @param {number} options.limit
+   * @param {number} options.nextColumn
+   * @param {number} options.nextRow
    * @returns boolean
    */
-  const canMove = ({ currentPos, distance, limit }) => {
+  const canMove = ({ nextColumn, nextRow }) => {
     return (
-      0 <= Math.round(currentPos + distance) &&
-      Math.round(currentPos + distance) < Math.round(limit)
+      0 <= nextColumn &&
+      nextColumn < NUMBER_OF_COLUMNS &&
+      0 <= nextRow &&
+      nextRow < NUMBER_OF_ROWS
     );
   };
 
   /**
+   * Move the robot.
    *
-   * @param {number} [distance=0] - How far to move a robot
+   * @param {number} [distance=0] - How far the robot should move.
    */
   const move = (distance = 0) => {
     if (!distance) {
@@ -116,30 +129,15 @@ const createRobot = ({ board, robotSelector }) => {
       return;
     }
 
-    // find relative postions
-    const {
-      height: maxBoardHeight,
-      width: maxBoardWidth,
-      top: boardTopPos,
-      left: boardLeftPos,
-    } = board.getBoundingClientRect();
-
-    const { top: robotTopPos, left: robotLeftPos } =
-      robot.getBoundingClientRect();
-
-    const relativeTopPos = robotTopPos - boardTopPos;
-    const relativeLeftPos = robotLeftPos - boardLeftPos;
-
     switch (currentDirection) {
       case "Right": {
         if (
           canMove({
-            currentPos: relativeLeftPos,
-            distance: distance,
-            limit: maxBoardWidth,
+            nextColumn: currentColumn + 1,
+            nextRow: currentRow,
           })
         ) {
-          robot.style.left = `${relativeLeftPos + distance}px`;
+          currentColumn += 1;
         }
 
         break;
@@ -147,12 +145,11 @@ const createRobot = ({ board, robotSelector }) => {
       case "Down": {
         if (
           canMove({
-            currentPos: relativeTopPos,
-            distance: distance * 1,
-            limit: maxBoardHeight,
+            nextColumn: currentColumn,
+            nextRow: currentRow + 1,
           })
         ) {
-          robot.style.top = `${relativeTopPos + distance}px`;
+          currentRow += 1;
         }
 
         break;
@@ -160,12 +157,11 @@ const createRobot = ({ board, robotSelector }) => {
       case "Left": {
         if (
           canMove({
-            currentPos: relativeLeftPos,
-            distance: distance * -1,
-            limit: maxBoardWidth,
+            nextColumn: currentColumn - 1,
+            nextRow: currentRow,
           })
         ) {
-          robot.style.left = `${relativeLeftPos - distance}px`;
+          currentColumn -= 1;
         }
 
         break;
@@ -173,12 +169,11 @@ const createRobot = ({ board, robotSelector }) => {
       case "Up": {
         if (
           canMove({
-            currentPos: relativeTopPos,
-            distance: distance * -1,
-            limit: maxBoardHeight,
+            nextColumn: currentColumn,
+            nextRow: currentRow - 1,
           })
         ) {
-          robot.style.top = `${relativeTopPos - distance}px`;
+          currentRow -= 1;
         }
         break;
       }
@@ -186,9 +181,14 @@ const createRobot = ({ board, robotSelector }) => {
         // do nothing
       }
     }
+
+    updateRobotPositions(distance);
   };
 
-  function rotate() {
+  /**
+   * Rotate the robot clockwise.
+   */
+  const rotate = () => {
     const CSS_VAR_ROBOT_ROTATE_ANGLE = "--br-robot-rotate-angle";
 
     const currentDirectionIndex = DIRECTION_SEQUENCE.findIndex(
@@ -198,7 +198,6 @@ const createRobot = ({ board, robotSelector }) => {
     if (currentDirectionIndex >= 0) {
       const nextDirectionIndex = (currentDirectionIndex + 1) % 4;
       currentDirection = DIRECTION_SEQUENCE[nextDirectionIndex];
-      // return DIRECTION_SEQUENCE[nextDirectionIndex];
     } else {
       currentDirection = DIRECTION_SEQUENCE[0];
     }
@@ -215,17 +214,32 @@ const createRobot = ({ board, robotSelector }) => {
       CSS_VAR_ROBOT_ROTATE_ANGLE,
       `${rotateAngle}deg`
     );
-  }
+  };
 
-  function getDirection() {
+  /**
+   * The current direction the robot is facing.
+   * @returns {string} One of the cardinal direction: `Right`, `Down`, `Left`, `Up`.
+   */
+  const getDirection = () => {
     return currentDirection;
-  }
+  };
+
+  /**
+   * Update the current position (top and left) of the robot.
+   *
+   * @param {number} distance
+   */
+  const updateRobotPositions = (distance = 0) => {
+    robot.style.left = `${currentColumn * distance}px`;
+    robot.style.top = `${currentRow * distance}px`;
+  };
 
   return {
     instance: robot,
     move,
-    getDirection,
     rotate,
+    getDirection,
+    updateRobotPositions,
   };
 };
 
@@ -240,7 +254,6 @@ document.addEventListener("DOMContentLoaded", () => {
   board.init();
 
   const robot = createRobot({
-    board: board.instance,
     robotSelector: ".br-board-container > .br-robot",
   });
 
@@ -285,5 +298,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const rotateButton = document.querySelector("button.br-control-rotate");
   rotateButton?.addEventListener("click", () => {
     robot.rotate();
+  });
+
+  // Update the robot position on the board.
+  // NOTE: This is required for the robot is Absolute-positioned on top of the board.
+  window.addEventListener("resize", () => {
+    const { width: moveDistance } = board.getGridSize();
+
+    robot.updateRobotPositions(moveDistance);
   });
 });
