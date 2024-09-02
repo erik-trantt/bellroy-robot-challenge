@@ -35,8 +35,8 @@ const createBoard = ({ selector }) => {
 
     for (let i = 0; i < numberOfGrids; i++) {
       const gridElement = document.createElement("div");
-      gridElement.id = `br-board-tile-${i + 1}`;
-      gridElement.classList.add("br-board-tile");
+      gridElement.id = `br-board-grid-${i + 1}`;
+      gridElement.classList.add("br-board-grid");
 
       board.appendChild(gridElement);
     }
