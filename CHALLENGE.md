@@ -13,10 +13,10 @@ Open the HTML file from a browser.
 ## Assumptions
 
 1. The board is a 5x5 grid.
-1. Controls for the robot can be of either interfaces:
+2. Controls for the robot can be of either interfaces:
 
 - HTML elements (buttons) on the interface
 - Keyboards
 
-1. The robot starting position is the top left corner and faces to right side of the board.
-1. The robot can only rotate clockwise.
+3. The robot starting position is the top left corner and faces to right side of the board.
+4. The robot can only rotate clockwise.
