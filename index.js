@@ -257,15 +257,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     switch (kbEvent.key) {
-      case "ArrowUp": {
-        // Up arrow
+      case "m": {
+        // Key "M"
         const { width: moveDistance } = board.getBoardSize();
         robot?.move(moveDistance);
 
         break;
       }
-      case " ": {
-        // Spacebar
+      case "r": {
+        // Key "R"
         robot?.rotate();
 
         break;
