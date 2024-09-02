@@ -33,12 +33,14 @@ button {
   .br-board {
     height: inherit;
     width: inherit;
-
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    outline: 1px solid var(--br-secondary-color, lightgrey);
-    border-radius: 4px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow:
+      0 20px 15px -17px rgba(0, 0, 0, 0.15),
+      0 1px 2px rgba(0, 0, 0, 0.15);
 
     .br-board-tile {
       aspect-ratio: 1;
@@ -46,10 +48,10 @@ button {
     }
 
     .br-board-tile:nth-child(2n) {
-      background: var(--br-secondary-color, lightgrey);
+      background-color: #eeeae6;
     }
     .br-board-tile:nth-child(2n + 1) {
-      background: #ffffff;
+      background-color: #d16332;
     }
   }
 
@@ -94,6 +96,7 @@ button {
       background-color 0.2s ease,
       box-shadow 0.2s ease;
     touch-action: manipulation;
+    text-transform: uppercase;
 
     &:focus:not(:focus-visible) {
       outline: none;
@@ -109,8 +112,8 @@ button {
     background-color: var(--br-primary-color, orange);
     color: white;
     box-shadow:
-      0 20px 15px -17px rgba(0, 0, 0, 0.3),
-      0 1px 2px rgba(0, 0, 0, 0.3);
+      0 20px 15px -17px rgba(0, 0, 0, 0.15),
+      0 1px 2px rgba(0, 0, 0, 0.15);
 
     &:hover {
       background-color: #c75724;
