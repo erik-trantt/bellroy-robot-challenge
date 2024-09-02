@@ -9,31 +9,62 @@
     <link rel="preload" href="./index.js" as="script" />
 
     <link rel="stylesheet" href="./index.css" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./assets/font.css" />
   </head>
 
   <body style="margin: 0">
-    <div
-      style="height: 100vh; width: 100vw; display: flex; flex-direction: column"
-    >
-      <div class="br-container" style="margin: auto auto 2em">
-        <div
-          class="br-board"
-          title="When not focused on control buttons, hit Spacebar to rotate and Up to move forward"
-        ></div>
-
-        <div class="br-robot">
-          <div class="face"></div>
-        </div>
+    <div style="height: 100vh; display: flex; flex-direction: column">
+      <div class="br-header">
+        Use the buttons provided or "M" and "R" keys to move your owl friend.
       </div>
 
-      <div class="br-controls-container" style="margin: 2em auto auto">
-        <button type="button" class="br-control br-control-move">
-          Move forward
-        </button>
+      <main
+        style="padding: 2em; display: flex; flex-direction: column; flex: 1"
+      >
+        <div class="br-board-container" style="margin: auto auto 2em">
+          <div
+            class="br-board"
+            title="When not focused on control buttons, hit Spacebar to rotate and Up to move forward"
+          ></div>
 
-        <button type="button" class="br-control br-control-rotate">
-          Rotate
-        </button>
+          <div class="br-robot">
+            <img
+              src="./assets/owl-icon.svg"
+              alt="Robot avatar from the top down view"
+              class="face"
+            />
+          </div>
+        </div>
+
+        <div class="br-controls-container" style="margin: 2em auto auto">
+          <button type="button" class="br-control br-control-move">
+            Move forward (M)
+          </button>
+
+          <button type="button" class="br-control br-control-rotate">
+            Rotate (R)
+          </button>
+        </div>
+      </main>
+
+      <div class="br-footer" style="flex: none">
+        <div class="br-avatar-container">
+          <!-- Credit: https://emojis.sh/emoji/an-owl-in-a-hat-qgynq6jARB -->
+          <img
+            src="./assets/owl-avatar.avif"
+            alt="Owl avatar"
+            class="br-avatar"
+          />
+        </div>
       </div>
     </div>
 

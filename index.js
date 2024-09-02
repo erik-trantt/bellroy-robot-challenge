@@ -76,11 +76,12 @@ const createBoard = ({ selector }) => {
  * Create a new robot.
  *
  * @param {Object} options
- * @param {Element} options.board
+ * @param {Element} options.board - The game board
+ * @param {string} options.robotSelector - The CSS selector string for the robot.
  * @returns {CreateRobotReturn}
  */
-const createRobot = ({ board }) => {
-  const robot = document.querySelector(".br-container > .br-robot");
+const createRobot = ({ board, robotSelector }) => {
+  const robot = document.querySelector(robotSelector);
 
   let currentDirection = DIRECTION_SEQUENCE[0];
 
@@ -229,7 +230,7 @@ const createRobot = ({ board }) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const board = createBoard({ selector: ".br-container > div.br-board" });
+  const board = createBoard({ selector: ".br-board-container > div.br-board" });
 
   if (!board.instance) {
     console.warn("Board is not found");
@@ -240,6 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const robot = createRobot({
     board: board.instance,
+    robotSelector: ".br-board-container > .br-robot",
   });
 
   // add actions to the keyup event for the following keys:
